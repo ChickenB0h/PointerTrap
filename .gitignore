@@ -16,7 +16,6 @@ local.properties
 .settings/
 .loadpath
 .set
-*.set
 
 # External tool builders
 .externalToolBuilders/
