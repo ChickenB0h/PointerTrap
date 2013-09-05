@@ -66,6 +66,7 @@ namespace PointerTrap
 				hardLock.Checked = settings.hardLock;
 				cbTray.Checked = settings.minimizeToTray;
 				cbTrayBalloons.Checked = settings.showBalloons;
+				numCycle.Value = (decimal)settings.warpCycle;
 			}
 			catch
 			{
@@ -199,6 +200,10 @@ namespace PointerTrap
 		{
 			settings.showBalloons = cbTrayBalloons.Checked;
 		}
+		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+		{
+			settings.warpCycle = (int)numCycle.Value;
+		}
 		#endregion
 
 		#region methods
@@ -310,6 +315,5 @@ namespace PointerTrap
 			}
 		}
 		#endregion
-
 	}
 }

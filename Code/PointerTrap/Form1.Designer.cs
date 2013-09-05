@@ -47,7 +47,11 @@
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.cbTray = new System.Windows.Forms.CheckBox();
 			this.cbTrayBalloons = new System.Windows.Forms.CheckBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.numCycle = new System.Windows.Forms.NumericUpDown();
+			this.button1 = new System.Windows.Forms.Button();
 			this.contextMenuStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numCycle)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// setHotkey
@@ -83,7 +87,7 @@
 			// 
 			// RefreshProcList
 			// 
-			this.RefreshProcList.Location = new System.Drawing.Point(283, 63);
+			this.RefreshProcList.Location = new System.Drawing.Point(284, 63);
 			this.RefreshProcList.Name = "RefreshProcList";
 			this.RefreshProcList.Size = new System.Drawing.Size(75, 23);
 			this.RefreshProcList.TabIndex = 3;
@@ -154,7 +158,7 @@
 			// 
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(290, 123);
+			this.label4.Location = new System.Drawing.Point(290, 143);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(79, 13);
 			this.label4.TabIndex = 10;
@@ -186,7 +190,7 @@
 			// cbTray
 			// 
 			this.cbTray.AutoSize = true;
-			this.cbTray.Location = new System.Drawing.Point(15, 119);
+			this.cbTray.Location = new System.Drawing.Point(15, 139);
 			this.cbTray.Name = "cbTray";
 			this.cbTray.Size = new System.Drawing.Size(98, 17);
 			this.cbTray.TabIndex = 12;
@@ -197,7 +201,7 @@
 			// cbTrayBalloons
 			// 
 			this.cbTrayBalloons.AutoSize = true;
-			this.cbTrayBalloons.Location = new System.Drawing.Point(136, 119);
+			this.cbTrayBalloons.Location = new System.Drawing.Point(136, 139);
 			this.cbTrayBalloons.Name = "cbTrayBalloons";
 			this.cbTrayBalloons.Size = new System.Drawing.Size(115, 17);
 			this.cbTrayBalloons.TabIndex = 13;
@@ -205,11 +209,50 @@
 			this.cbTrayBalloons.UseVisualStyleBackColor = true;
 			this.cbTrayBalloons.CheckedChanged += new System.EventHandler(this.cbTrayBalloons_CheckedChanged);
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(12, 116);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(125, 13);
+			this.label5.TabIndex = 14;
+			this.label5.Text = "Hard lock cycle time(ms):";
+			// 
+			// numCycle
+			// 
+			this.numCycle.Location = new System.Drawing.Point(136, 113);
+			this.numCycle.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.numCycle.Name = "numCycle";
+			this.numCycle.Size = new System.Drawing.Size(120, 20);
+			this.numCycle.TabIndex = 15;
+			this.numCycle.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(284, 110);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 16;
+			this.button1.Text = "Set";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.numericUpDown1_ValueChanged);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(375, 141);
+			this.ClientSize = new System.Drawing.Size(375, 161);
+			this.Controls.Add(this.button1);
+			this.Controls.Add(this.numCycle);
+			this.Controls.Add(this.label5);
 			this.Controls.Add(this.cbTrayBalloons);
 			this.Controls.Add(this.cbTray);
 			this.Controls.Add(this.label4);
@@ -225,13 +268,14 @@
 			this.Controls.Add(this.setHotkey);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(391, 180);
-			this.MinimumSize = new System.Drawing.Size(391, 180);
+			this.MaximumSize = new System.Drawing.Size(391, 200);
+			this.MinimumSize = new System.Drawing.Size(391, 200);
 			this.Name = "Form1";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Pointer Trap";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.contextMenuStrip1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.numCycle)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -256,6 +300,9 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.CheckBox cbTray;
 		private System.Windows.Forms.CheckBox cbTrayBalloons;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.NumericUpDown numCycle;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

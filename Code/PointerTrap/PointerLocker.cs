@@ -18,9 +18,11 @@ namespace PointerTrap
 		public bool active = false;
 		private bool previousState;
 		private bool suspended = false;
+
 		private Screen lockedScreen;
 		private Settings settings;
 		private Rectangle wholeArea;
+		private Point middlePointOfLock;
 		#endregion
 
 		#region delegates
@@ -53,7 +55,7 @@ namespace PointerTrap
 		{
 			while (true)
 			{
-				Thread.Sleep(10);
+				Thread.Sleep(settings.warpCycle);
 				if (previousState != active)
 				{
 					previousState = active;
@@ -129,10 +131,12 @@ namespace PointerTrap
 						Cursor.Clip = rectangle;
 					}
 
-					if (settings.hardLock)
-					{
-						Cursor.Clip = new Rectangle(new Point(Cursor.Clip.Left + Cursor.Clip.Width / 2, Cursor.Clip.Top + Cursor.Clip.Height / 2), new Size(1, 1));
-					}
+					middlePointOfLock = new Point(Cursor.Clip.Left + Cursor.Clip.Width / 2, Cursor.Clip.Top + Cursor.Clip.Height / 2);
+				}
+
+				if (settings.hardLock)
+				{
+					Cursor.Position = middlePointOfLock;
 				}
 			}
 			catch

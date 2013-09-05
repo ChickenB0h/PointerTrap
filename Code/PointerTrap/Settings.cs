@@ -31,6 +31,7 @@ namespace PointerTrap
 		public bool minimizeToTray;
 		public bool showBalloons;
 		public Point WindowLocation;
+		public int warpCycle;
 
 		public Settings(){}
 
@@ -60,6 +61,7 @@ namespace PointerTrap
 			this.minimizeToTray = set.minimizeToTray;
 			this.showBalloons = set.showBalloons;
 			this.WindowLocation = set.WindowLocation;
+			this.warpCycle = set.warpCycle;
 		}
 	}
 }
