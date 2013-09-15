@@ -12,9 +12,7 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
-using MouseKeyboardActivityMonitor;
-using MouseKeyboardActivityMonitor.Controls;
-using MouseKeyboardActivityMonitor.WinApi;
+using KeyListiner;
 
 namespace PointerTrap
 {
@@ -22,11 +20,10 @@ namespace PointerTrap
 	{
 		#region fields
 		private readonly string settingsPath = AppDomain.CurrentDomain.BaseDirectory + "PointerTrap.set";
-		private MouseHookListener mouseHook;
-		private KeyboardHookListener keyboardHook;
-		private List<Keys> pressed = new List<Keys>();
-		private List<Keys> pressedSettings = new List<Keys>();
-		private List<Keys> pressedModifiersSettings = new List<Keys>();
+		private KeyboardHook hook = new KeyboardHook();
+
+		private ModifierKeys modifierSetting;
+		private Keys keySetting;
 
 		private Settings settings;
 		private Thread pointerTrapThread;
@@ -61,12 +58,10 @@ namespace PointerTrap
 				settings.Load();
 
 				Location = settings.WindowLocation;
-				hotkeyBox.Text = keysToString(settings.hotkey);
+				hotkeyBox.Text = keysToString(settings.modifierKey, settings.hotkey);
 				lockTypeCombo.SelectedItem = settings.lockType;
-				hardLock.Checked = settings.hardLock;
 				cbTray.Checked = settings.minimizeToTray;
 				cbTrayBalloons.Checked = settings.showBalloons;
-				numCycle.Value = (decimal)settings.warpCycle;
 			}
 			catch
 			{
@@ -74,13 +69,7 @@ namespace PointerTrap
 			}
 			finally
 			{
-				mouseHook = new MouseHookListener(new GlobalHooker());
-				keyboardHook = new KeyboardHookListener(new GlobalHooker());
-
-				keyboardHook.KeyDown += keyboardHook_KeyDown;
-				keyboardHook.KeyUp += keyboardHook_KeyUp;
-				keyboardHook.Start();
-				mouseHook.Start();
+				hook.KeyPressed += keyboardHook_HotKeyMatched;
 
 				FormClosing += Form1_FormClosing;
 				Resize += Form1_Resize;
@@ -92,34 +81,21 @@ namespace PointerTrap
 				locker.Deactivated += locker_Deactivated;
 				pointerTrapThread = new Thread(new ThreadStart(locker.Run));
 				pointerTrapThread.Start();
+
+				if (settings.modifierKey != 0 || settings.hotkey != Keys.None)
+					hook.RegisterHotKey(settings.modifierKey, settings.hotkey);
 			}
 		}
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			pointerTrapThread.Abort();
-			mouseHook.Stop();
-			keyboardHook.Stop();
 			settings.WindowLocation = this.Location;
 			settings.Save();
 		}
 
-		private void keyboardHook_KeyUp(object sender, KeyEventArgs e)
+		private void keyboardHook_HotKeyMatched(object sender, KeyPressedEventArgs e)
 		{
-			pressed.Clear();
-		}
-		private void keyboardHook_KeyDown(object sender, KeyEventArgs e)
-		{
-			Keys key = e.KeyCode;
-			if (IsKeyModifier(e.KeyValue))
-			{
-				key = ConvertToModifier(e.KeyValue);
-			}
-
-			pressed.Add(key);
-			if (isHotkeyMatched())
-			{
-				locker.active = !locker.active;
-			}
+			locker.active = !locker.active;
 		}
 
 		private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -133,19 +109,29 @@ namespace PointerTrap
 		#region hotkey setter
 		private void textBox1_KeyDown(object sender, KeyEventArgs e)
 		{
-			Keys key = NormilizeKeys(e.KeyCode);
-			if (!pressedSettings.Contains(key))
+			switch (e.KeyValue)
 			{
-				pressedSettings.Add(key);
-				TextBox source = sender as TextBox;
-				source.Text = keysToString(pressedSettings);
+				case 16: modifierSetting = modifierSetting | KeyListiner.ModifierKeys.Shift; break;
+				case 17: modifierSetting = modifierSetting | KeyListiner.ModifierKeys.Control; break;
+				case 18: modifierSetting = modifierSetting | KeyListiner.ModifierKeys.Alt; break;
+				default: keySetting = e.KeyCode; break;
 			}
+
+			TextBox source = sender as TextBox;
+			source.Text = keysToString(modifierSetting, keySetting);
 		}
 		private void textBox1_KeyUp(object sender, KeyEventArgs e)
 		{
-			pressedSettings.Remove(NormilizeKeys(e.KeyCode));
+			switch (e.KeyValue)
+			{
+				case 16: modifierSetting = modifierSetting & ~KeyListiner.ModifierKeys.Shift; break;
+				case 17: modifierSetting = modifierSetting & ~KeyListiner.ModifierKeys.Control; break;
+				case 18: modifierSetting = modifierSetting & ~KeyListiner.ModifierKeys.Alt; break;
+				default: if (keySetting == e.KeyCode) keySetting = Keys.None; break;
+			}
+
 			TextBox source = sender as TextBox;
-			source.Text = keysToString(pressedSettings);
+			source.Text = keysToString(modifierSetting, keySetting);
 		}
 		private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
 		{
@@ -153,18 +139,25 @@ namespace PointerTrap
 		}
 		private void setHotkey_Click(object sender, EventArgs e)
 		{
-			settings.hotkey = pressedSettings;
-			hotkeyBox.Text = keysToString(pressedSettings);
+			settings.hotkey = keySetting;
+			settings.modifierKey = modifierSetting;
+			hotkeyBox.Text = keysToString(modifierSetting, keySetting);
 			SwitchVisibility();
 			this.Focus();
 			locker.Resume();
-			pressed.Clear();
+			Thread.Sleep(500);
+			if (settings.modifierKey != 0 || settings.hotkey != Keys.None)
+				hook.RegisterHotKey(settings.modifierKey, settings.hotkey);
 		}
 		private void changeHotkey_Click(object sender, EventArgs e)
 		{
 			locker.Suspend();
 			SwitchVisibility();
 			hotkeyBox.Focus();
+			hook.UnregisterHotKeys();
+			settings.hotkey = Keys.None;
+			settings.modifierKey = 0;
+			hotkeyBox.Text = string.Empty;
 		}
 		private void SwitchVisibility()
 		{
@@ -188,10 +181,6 @@ namespace PointerTrap
 		{
 			RefreshProcessList();
 		}
-		private void hideCursorBox_CheckedChanged(object sender, EventArgs e)
-		{
-			settings.hardLock = hardLock.Checked;
-		}
 		private void cbTray_CheckedChanged(object sender, EventArgs e)
 		{
 			settings.minimizeToTray = cbTray.Checked;
@@ -199,10 +188,6 @@ namespace PointerTrap
 		private void cbTrayBalloons_CheckedChanged(object sender, EventArgs e)
 		{
 			settings.showBalloons = cbTrayBalloons.Checked;
-		}
-		private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-		{
-			settings.warpCycle = (int)numCycle.Value;
 		}
 		#endregion
 
@@ -213,16 +198,12 @@ namespace PointerTrap
 			ProcessHelper.GetAllWindows().ForEach(p => processBox.Items.Add(p.MainModule.ModuleName));
 			processBox.SelectedItem = settings.processLockName;
 		}
-		private string keysToString(List<Keys> keys)
+		private string keysToString(ModifierKeys mod, Keys keys)
 		{
 			string result = string.Empty;
-			foreach (Keys key in keys)
-			{
-				result += key.ToString() + " + ";
-			}
-
-			if (result.Contains("+"))
-				result = result.Remove(result.Length - 3);
+			result = mod != 0 ? mod.ToString().Replace(", ", "+") : string.Empty;
+			result += mod != 0 && keys != Keys.None ? "+" : string.Empty;
+			result += keys != Keys.None ? keys.ToString() : string.Empty;
 
 			return result;
 		}
@@ -231,41 +212,6 @@ namespace PointerTrap
 			processBox.Enabled = settings.lockType == LockType.Process;
 			RefreshProcList.Enabled = settings.lockType == LockType.Process;
 			RefreshProcessList();
-		}
-		private bool isHotkeyMatched()
-		{
-			return settings.hotkey.All(key => pressed.Contains(key)) && pressed.All(key => settings.hotkey.Contains(key));
-		}
-		#endregion
-
-		#region key helpers
-		private Keys ConvertToModifier(int key)
-		{
-			switch (key)
-			{
-				case 160:
-				case 161: return Keys.Shift;
-				case 162:
-				case 163: return Keys.Control;
-				case 164:
-				case 165: return Keys.Alt;
-				default: return Keys.None;
-			}
-		}
-		private bool IsKeyModifier(int key)
-		{
-			int[] modValues = new int[6] { 160, 161, 162, 163, 164, 165 };
-			return modValues.Any(v => v == key);
-		}
-		private Keys NormilizeKeys(Keys key)
-		{
-			switch (key)
-			{
-				case Keys.ShiftKey: return Keys.Shift;
-				case Keys.Menu: return Keys.Alt;
-				case Keys.ControlKey: return Keys.Control;
-				default: return key;
-			}
 		}
 		#endregion
 

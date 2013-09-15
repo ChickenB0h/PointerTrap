@@ -55,7 +55,6 @@ namespace PointerTrap
 		{
 			while (true)
 			{
-				Thread.Sleep(settings.warpCycle);
 				if (previousState != active)
 				{
 					previousState = active;
@@ -132,11 +131,6 @@ namespace PointerTrap
 					}
 
 					middlePointOfLock = new Point(Cursor.Clip.Left + Cursor.Clip.Width / 2, Cursor.Clip.Top + Cursor.Clip.Height / 2);
-				}
-
-				if (settings.hardLock)
-				{
-					Cursor.Position = middlePointOfLock;
 				}
 			}
 			catch

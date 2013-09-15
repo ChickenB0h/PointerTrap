@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Diagnostics;
+using KeyListiner;
 
 namespace PointerTrap
 {
@@ -24,14 +25,15 @@ namespace PointerTrap
 		[NonSerialized]
 		private readonly string settingsPath = AppDomain.CurrentDomain.BaseDirectory + "/PointerTrap.set";
 
-		public List<Keys> hotkey = new List<Keys>();
+		public Keys hotkey;
+		public ModifierKeys modifierKey;
 		public LockType lockType = LockType.Monitor;
 		public string processLockName;
-		public bool hardLock;
+		public bool hardLock = false;
 		public bool minimizeToTray;
 		public bool showBalloons;
 		public Point WindowLocation;
-		public int warpCycle;
+		public int warpCycle = 0;
 
 		public Settings(){}
 
@@ -62,6 +64,7 @@ namespace PointerTrap
 			this.showBalloons = set.showBalloons;
 			this.WindowLocation = set.WindowLocation;
 			this.warpCycle = set.warpCycle;
+			this.modifierKey = set.modifierKey;
 		}
 	}
 }

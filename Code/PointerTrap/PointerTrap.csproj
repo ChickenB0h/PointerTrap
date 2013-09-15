@@ -53,10 +53,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MouseKeyboardActivityMonitor, Version=3.0.1.9571, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\MouseKeyboardActivityMonitor.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
@@ -77,6 +73,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="KeyListiner.cs" />
     <Compile Include="PointerLocker.cs" />
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="Program.cs" />
