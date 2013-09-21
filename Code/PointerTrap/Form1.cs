@@ -62,6 +62,7 @@ namespace PointerTrap
 				lockTypeCombo.SelectedItem = settings.lockType;
 				cbTray.Checked = settings.minimizeToTray;
 				cbTrayBalloons.Checked = settings.showBalloons;
+				checkBox1.Checked = settings.boarderFix;
 			}
 			catch
 			{
@@ -261,5 +262,10 @@ namespace PointerTrap
 			}
 		}
 		#endregion
+
+		private void checkBox1_CheckedChanged(object sender, EventArgs e)
+		{
+			settings.boarderFix = checkBox1.Checked;
+		}
 	}
 }

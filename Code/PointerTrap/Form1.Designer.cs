@@ -46,6 +46,7 @@
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.cbTray = new System.Windows.Forms.CheckBox();
 			this.cbTrayBalloons = new System.Windows.Forms.CheckBox();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -140,7 +141,7 @@
 			// 
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(293, 96);
+			this.label4.Location = new System.Drawing.Point(293, 116);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(79, 13);
 			this.label4.TabIndex = 10;
@@ -191,11 +192,23 @@
 			this.cbTrayBalloons.UseVisualStyleBackColor = true;
 			this.cbTrayBalloons.CheckedChanged += new System.EventHandler(this.cbTrayBalloons_CheckedChanged);
 			// 
+			// checkBox1
+			// 
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.Location = new System.Drawing.Point(15, 112);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(79, 17);
+			this.checkBox1.TabIndex = 14;
+			this.checkBox1.Text = "Boarder Fix";
+			this.checkBox1.UseVisualStyleBackColor = true;
+			this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(375, 111);
+			this.ClientSize = new System.Drawing.Size(375, 131);
+			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.cbTrayBalloons);
 			this.Controls.Add(this.cbTray);
 			this.Controls.Add(this.label4);
@@ -210,8 +223,8 @@
 			this.Controls.Add(this.setHotkey);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(391, 150);
-			this.MinimumSize = new System.Drawing.Size(391, 150);
+			this.MaximumSize = new System.Drawing.Size(391, 170);
+			this.MinimumSize = new System.Drawing.Size(391, 170);
 			this.Name = "Form1";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Pointer Trap";
@@ -240,6 +253,7 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.CheckBox cbTray;
 		private System.Windows.Forms.CheckBox cbTrayBalloons;
+		private System.Windows.Forms.CheckBox checkBox1;
 	}
 }
 

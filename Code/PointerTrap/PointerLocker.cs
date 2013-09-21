@@ -125,8 +125,22 @@ namespace PointerTrap
 					{
 						Process proc = ProcessHelper.GetProcessByMainModuleName(settings.processLockName);
 						RECT rct = new RECT();
-						GetWindowRect(proc.MainWindowHandle, ref rct);
-						Rectangle rectangle = new Rectangle(new Point(rct.Left, rct.Top), new Size(rct.Right - rct.Left, rct.Bottom - rct.Top));
+						Rectangle rectangle = new Rectangle();
+						if (settings.boarderFix)
+						{
+							Point pnt = new Point();
+							GetClientRect(proc.MainWindowHandle, ref rct);
+							ClientToScreen(proc.MainWindowHandle, ref pnt);
+
+							rectangle = new Rectangle(new Point(rct.Left, rct.Top), new Size(rct.Right - rct.Left, rct.Bottom - rct.Top));
+							rectangle.Location = pnt;
+						}
+						else
+						{
+							GetWindowRect(proc.MainWindowHandle, ref rct);
+							rectangle = new Rectangle(new Point(rct.Left, rct.Top), new Size(rct.Right - rct.Left, rct.Bottom - rct.Top));
+						}
+
 						Cursor.Clip = rectangle;
 					}
 
@@ -154,6 +168,15 @@ namespace PointerTrap
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+		
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool GetClientRect(IntPtr hWnd, ref RECT lpRect);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool ClientToScreen(IntPtr hWnd, ref Point lpRect);
+
 		[StructLayout(LayoutKind.Sequential)]
 		private struct RECT
 		{
@@ -162,6 +185,13 @@ namespace PointerTrap
 			public int Right;
 			public int Bottom;
 		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT {
+			public long x;
+			public long y;
+		}
+
 		#endregion
 	}
 }

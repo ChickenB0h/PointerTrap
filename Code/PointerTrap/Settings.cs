@@ -34,6 +34,7 @@ namespace PointerTrap
 		public bool showBalloons;
 		public Point WindowLocation;
 		public int warpCycle = 0;
+		public bool boarderFix;
 
 		public Settings(){}
 
@@ -65,6 +66,7 @@ namespace PointerTrap
 			this.WindowLocation = set.WindowLocation;
 			this.warpCycle = set.warpCycle;
 			this.modifierKey = set.modifierKey;
+			this.boarderFix = set.boarderFix;
 		}
 	}
 }
