@@ -55,6 +55,7 @@ namespace PointerTrap
 		{
 			while (true)
 			{
+				Thread.Sleep(50);
 				if (previousState != active)
 				{
 					previousState = active;
